@@ -1,0 +1,44 @@
+---
+title: "MAF tools - genomic visualization and analyses"
+output: html_notebook
+---
+
+#Load libraries
+```{r}
+install.packages("readr")
+library(maftools)
+library(tidyverse)
+library(readr)
+```
+#Import clinical and genomic files.
+```{r}
+mutations_GENIE <- read_csv("dummy_variables.csv")
+
+primary_tumor_public_clinical_data <- read_csv("primary_tumor_public_clinical_data_UPDATED.csv")
+
+
+#Rename "Sample ID", "Tumor_Sample_Barcode" in clinical file.
+
+primary_tumor_public_clinical_data <- rename(primary_tumor_public_clinical_data, c("Tumor_Sample_Barcode"="Sample ID"))
+
+```
+
+#Create MAF file
+
+```{r}
+
+
+lymphoma.maf = mutations_GENIE
+
+lymphoma.clinical = primary_tumor_public_clinical_data
+
+LYMPH = read.maf(maf = lymphoma.maf, clinicalData = lymphoma.clinical)
+```
+```{r}
+getGeneSummary(LYMPH)
+```
+
+
+```{r}
+oncoplot(LYMPH, top=20, clinicalFeatures = c("Cancer_Type", "Cancer_Type_Detailed", "Sex"))
+```
